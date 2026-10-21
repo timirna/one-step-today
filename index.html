@@ -1,0 +1,101 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>One Step Today</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0f1724">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0f1724;color:#e5edf5;font:17px/1.5 system-ui,sans-serif;padding-bottom:90px}
+header{padding:18px 20px 6px}h1{margin:0;font-size:22px;color:#5eead4}h2{margin:0 0 10px;font-size:19px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:10px 16px;position:sticky;top:0;background:#0f1724;z-index:5}
+nav button{flex:0 0 auto}main{display:grid;gap:14px;padding:8px 16px;max-width:1100px;margin:auto}
+@media(min-width:900px){main{grid-template-columns:1fr 1fr}nav{justify-content:center}}
+.card{background:#17212f;border:1px solid #243244;border-radius:18px;padding:18px}
+button{min-height:48px;padding:10px 18px;border-radius:14px;border:0;background:#243244;color:#e5edf5;font-size:16px;cursor:pointer}
+button.p{background:#5eead4;color:#06201c;font-weight:600}nav button.on{background:#5eead4;color:#06201c}
+input,select,textarea{width:100%;min-height:46px;padding:10px;border-radius:12px;border:1px solid #33465e;background:#0f1724;color:#e5edf5;font-size:16px;margin:4px 0 10px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.big{font-size:52px;font-weight:700;color:#5eead4;text-align:center}
+#circle{width:180px;height:180px;margin:16px auto;border-radius:50%;background:radial-gradient(#5eead4,#0e7490);transform:scale(.5);transition:transform 4s ease-in-out;display:flex;align-items:center;justify-content:center;color:#06201c;font-weight:700}
+.muted{color:#94a3b8;font-size:15px}label.ck{display:flex;gap:12px;align-items:center;min-height:44px}label.ck input{width:24px;height:24px;margin:0}
+.log{font-size:14px;border-top:1px solid #243244;padding:6px 0}
+#help{position:fixed;right:16px;bottom:16px;z-index:9;background:#f87171;color:#fff;font-weight:700;border-radius:30px;padding:14px 22px;box-shadow:0 6px 20px #0008}
+#hp{display:none;position:fixed;inset:0;background:#000c;z-index:10;align-items:center;justify-content:center;padding:20px}#hp .card{max-width:420px;width:100%}
+a.btn{display:block;text-align:center;text-decoration:none;margin:8px 0}
+#sosb{position:fixed;left:16px;bottom:16px;z-index:9;background:#fbbf24;color:#2a1a00;font-weight:700;border-radius:30px;padding:14px 22px;box-shadow:0 6px 20px #0008}
+.step{padding:10px;border-radius:12px;margin:6px 0;background:#0f1724}.step.on{outline:2px solid #fbbf24}.step.done{opacity:.5}
+.bars{display:flex;gap:6px;align-items:flex-end;height:120px}.bars div{flex:1;background:#5eead4;border-radius:6px 6px 0 0;text-align:center;font-size:12px;color:#06201c}
+</style></head><body>
+<header><h1>One Step Today</h1><div class="muted" id="greet"></div></header>
+<nav id="nav"></nav><main id="main"></main>
+<button id="sosb" onclick="go('sos')">Craving SOS 🔥</button><button id="help" onclick="hp.style.display='flex'">Help 🆘</button>
+<div id="hp" onclick="if(event.target===this)this.style.display='none'"><div class="card"><h2>You don't have to carry this alone</h2>
+<p class="muted">Kaan Pete Roi — free, confidential emotional support. Every day 3 PM – 3 AM.</p>
+<a class="btn" href="tel:+8809612119911"><button class="p" style="width:100%">📞 Kaan Pete Roi: 09612-119911</button></a>
+<a class="btn" id="fam" href="#"><button style="width:100%">👨‍👩‍👦 Call family</button></a>
+<a class="btn" href="tel:999"><button style="width:100%">🚨 Emergency 999</button></a>
+<a class="btn" href="https://kaanpeteroi.org" target="_blank"><button style="width:100%">kaanpeteroi.org</button></a>
+<input id="famn" placeholder="Family number (save once)"><button onclick="S.fam=famn.value;sv();setFam()">Save number</button>
+<button onclick="hp.style.display='none'">Close</button></div></div>
+<script>
+const S=JSON.parse(localStorage.ekta||'{}');S.cr=S.cr||[];S.mood=S.mood||[];S.ck=S.ck||{};
+function sv(){localStorage.ekta=JSON.stringify(S)}const $=id=>document.getElementById(id);const ld=d=>new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);const today=()=>ld(new Date());
+function setFam(){$('fam').href=S.fam?'tel:'+S.fam:'#';$('famn').value=S.fam||''}setFam();
+const h=new Date().getHours();$('greet').textContent=h<12?'Good morning, brother. New day — own it.':h<18?'Take a breath, brother. You can do this.':'It\'s night, brother. What you did today is enough.';
+const tabs={home:'Today',breath:'Breathing',focus:'Focus',clean:'Clean',mood:'Mood',sleep:'Sleep',sos:'SOS'};let cur='home';
+function nav(){$('nav').innerHTML=Object.entries(tabs).map(([k,v])=>`<button class="${k==cur?'on':''}" onclick="go('${k}')">${v}</button>`).join('')}
+function go(t){cur=t;nav();R[t]()}
+const swaps=[["I'm a loser","I'm trying. Losers don't try."],["Nothing will work out for me","One step today. Another tomorrow."],["I can't do it","I can't do it yet. I'm learning."],["It's all over","This craving fades in 20 minutes. I can wait it out."]];
+const items=['2 min breathing','A glass of water','5 min daylight before phone','Mood/craving check','Wrote my top 3 tasks','Breakfast on time'];
+function days(){if(!S.start)return 0;return Math.floor((new Date(today())-new Date(S.start))/864e5)}
+const R={};
+R.home=()=>{const c=S.ck[today()]||{};const sw=swaps[new Date().getDate()%swaps.length];$('main').innerHTML=`
+<div class="card"><h2>${h<15?'☀️ Morning message':'🌙 Night message'}</h2><p>${h<15?'You showed up again, brother. That is discipline, and nobody can take it from you. Today is yours to own. Drink water, breathe for 2 minutes, then write your top 3 tasks. Pick the first one and start a 25-minute focus block right now, phone in another room. Don\'t wait to feel ready. Move, and the feeling follows. One step today.':'What you did today is enough. No cursing yourself. Write one thing you did well and one to improve, drink water, and try to sleep early. Tomorrow, another step.'}</p></div>
+<div class="card"><h2>Clean</h2><div class="big">${days()} days</div><p class="muted" style="text-align:center">${S.start?'Every day counts.':'Set your start date in the Clean tab.'}</p></div>
+<div class="card"><h2>Morning checklist</h2>${items.map((t,i)=>`<label class="ck"><input type="checkbox" ${c[i]?'checked':''} onchange="tick(${i},this.checked)">${t}</label>`).join('')}</div>
+<div class="card"><h2>Self-talk swap</h2><p class="muted">❌ "${sw[0]}"</p><p>✅ "${sw[1]}"</p><button onclick="this.parentNode.querySelector('p+p').textContent='✅ \"'+swaps[Math.random()*4|0][1]+'\"'">Another</button></div>
+<div class="card"><h2>Reminder</h2><p class="muted">9:01 AM and 9:01 PM notifications (while the app is open or in the background).</p><button class="p" onclick="perm()">Turn on notifications</button> <span id="nst" class="muted">${typeof Notification!='undefined'?Notification.permission:'n/a'}</span></div>`};
+function tick(i,v){S.ck[today()]=S.ck[today()]||{};S.ck[today()][i]=v;sv()}
+let bt;R.breath=()=>{$('main').innerHTML=`<div class="card"><h2>Breathing</h2><div id="circle">Ready</div><div class="big" id="bc" style="font-size:28px"></div>
+<div class="row"><button class="p" onclick="breathe([['Breathe in',4],['Hold',4],['Breathe out',6]],5)">4-4-6 (5 round)</button><button class="p" onclick="breathe([['Breathe in',4],['Hold',4],['Breathe out',4],['Hold',4]],5)">Box 4-4-4-4</button><button onclick="clearTimeout(bt);circle.textContent='Ready';circle.style.transform='scale(.5)'">Stop</button></div></div>
+<div class="card"><h2>How</h2><p class="muted">Breathe in through your nose, out slowly through your mouth. When a craving hits, do these 2 minutes first. Your phone vibrates at each step.</p></div>`};
+function breathe(st,rounds){clearTimeout(bt);let r=0,i=0;const c=$('circle');(function step(){if(!$('circle')||c!==$('circle'))return;if(i==st.length){i=0;r++}if(r==rounds){c.textContent='Well done 🌿';c.style.transform='scale(.6)';return}const[t,s]=st[i];c.textContent=t;c.style.transitionDuration=s+'s';c.style.transform=t=='Breathe in'?'scale(1)':t=='Breathe out'?'scale(.5)':c.style.transform;$('bc')&&($('bc').textContent=`Round ${r+1}/${rounds} · ${s}s`);navigator.vibrate&&navigator.vibrate(80);i++;bt=setTimeout(step,s*1000)})()}
+let ft,fleft=1500,fmode='Focus';R.focus=()=>{$('main').innerHTML=`<div class="card"><h2>Focus 25/5</h2><input id="task" placeholder="One main task (just one)" value="${S.task||''}" oninput="S.task=this.value;sv()">
+<div class="big" id="ft"></div><p class="muted" id="fm" style="text-align:center"></p><div class="row"><button class="p" onclick="fstart()">Start</button><button onclick="clearInterval(ft)">Pause</button><button onclick="clearInterval(ft);fmode='Focus';fleft=1500;fdraw()">Reset</button></div></div>
+<div class="card"><h2>Rule</h2><p class="muted">Phone in another room. 25 minutes, one task. 5-minute break: water and a stretch.</p></div>`;fdraw()};
+function fdraw(){if(!$('ft'))return;$('ft').textContent=String(fleft/60|0).padStart(2,'0')+':'+String(fleft%60).padStart(2,'0');$('fm').textContent=fmode}
+function fstart(){clearInterval(ft);ft=setInterval(()=>{fleft--;if(fleft<=0){navigator.vibrate&&navigator.vibrate([200,100,200]);fmode=fmode=='Focus'?'Break':'Focus';fleft=fmode=='Focus'?1500:300;note(fmode=='Break'?'25 minutes done! Take a 5-minute break.':'Break over. Next block.')}fdraw()},1000)}
+R.clean=()=>{$('main').innerHTML=`<div class="card"><h2>Clean days</h2><div class="big">${days()} days</div><label>Start date</label><input type="date" value="${S.start||''}" onchange="S.start=this.value;sv();R.clean()"><p class="muted">Best streak: ${Math.max(S.best||0,days())} days. If you slip, reset. No shame — starting again is strength.</p><button onclick="if(confirm('Restart from today?')){S.best=Math.max(S.best||0,days());S.start=today();sv();R.clean()}">Restart from today</button></div>
+<div class="card"><h2>Craving log</h2><label>Intensity (1-5)</label><div class="row" id="ci">${[1,2,3,4,5].map(n=>`<button onclick="ci=${n};[...this.parentNode.children].forEach(b=>b.className='');this.className='p'">${n}</button>`).join('')}</div>
+<label>Trigger</label><input id="ctr" placeholder="what caused it? (low sleep, stress, friends...)"><label>What I did</label><select id="cdo"><option>Walk</option><option>Cold shower</option><option>Messaged someone</option><option>Breathing</option><option>Something else</option></select>
+<button class="p" onclick="S.cr.unshift({t:new Date().toLocaleString(),i:ci,tr:ctr.value,d:cdo.value});sv();R.clean()">Save</button>
+<div>${S.cr.slice(0,30).map(x=>`<div class="log">${x.t} · <b>${x.i}/5</b> · ${x.tr||'-'} → ${x.d}</div>`).join('')||'<p class="muted">Nothing yet.</p>'}</div></div>`};let ci=3;
+R.mood=()=>{$('main').innerHTML=`<div class="card"><h2>Mood check-in</h2><select id="mt"><option>Morning</option><option ${h>=15?'selected':''}>Night</option></select><div class="row">${['😞','😕','😐','🙂','😄'].map((e,i)=>`<button style="font-size:26px" onclick="mv=${i+1};[...this.parentNode.children].forEach(b=>b.className='');this.className='p'">${e}</button>`).join('')}</div>
+<label>One thing I did well today</label><textarea id="m1"></textarea><label>One thing I'll do better tomorrow</label><textarea id="m2"></textarea><p class="muted">Not "I'm a loser" — "I'm trying" is enough.</p>
+<button class="p" onclick="S.mood.unshift({t:new Date().toLocaleString(),w:mt.value,m:mv,a:m1.value,b:m2.value});sv();R.mood()">Save</button></div>
+<div class="card"><h2>History</h2>${S.mood.slice(0,30).map(x=>`<div class="log">${x.t} · ${x.w} · ${'😞😕😐🙂😄'.match(/./gu)[x.m-1]||''}<br>✅ ${x.a||'-'}<br>➡️ ${x.b||'-'}</div>`).join('')||'<p class="muted">Nothing yet.</p>'}</div>`};let mv=3;
+async function note(b){if(typeof Notification=='undefined'||Notification.permission!='granted')return;const r=await navigator.serviceWorker?.ready;r?r.showNotification('One Step Today',{body:b,icon:'icon-192.png'}):new Notification('One Step Today',{body:b})}
+async function perm(){if(typeof Notification=='undefined')return alert('This browser has no notifications');const p=await Notification.requestPermission();$('nst').textContent=p;sched()}
+function sched(){const n=new Date(),k=n.toISOString().slice(0,16);[[9,'Good morning. You showed up again. Water, 2 min breathing, top 3, first focus block. Own the day.'],[21,'Night check-in: one win, one to improve. Water, then sleep.']].forEach(([hh,m])=>{const key='n'+today()+hh;if(n.getHours()==hh&&n.getMinutes()>=1&&!S[key]){S[key]=1;sv();note(m)}})}
+
+const AFF=["I showed up again. That's the win.","One bad day is not my whole life.","Cravings come, cravings go. I stay.","I'm on my own side today.","I only need to win today.","Sleep, water, food — that's work too.","I'm not a loser. I'm in recovery.","If I slip, I get back up. That's strength.","My hands are for my work, not for the drug.","One deep breath is a win.","Asking for help is not weakness.","My family is my reason.","Small steps are still steps.","Today I forgive myself a little.","My mind builds good things.","Tomorrow's worries belong to tomorrow.","Phone far away, mind close.","I can wait 10 minutes.","I'm stronger than I think.","Every clean day beats any high.","I'm my own brother, not my own enemy.","Work today, sleep well tonight.","A dark thought is a thought, not a fact.","I'm not alone.","One good thing today is enough.","I respect myself like I respect my clients.","My body is healing, day by day.","When anger comes, I walk, I don't curse.","A glass of water, a fresh start.","I can do this — not all at once, day by day."];
+S.reasons=S.reasons||'';S.sleep=S.sleep||{};S.spend=S.spend||0;
+const MS=[1,3,7,14,30,60,90];
+function aff(){return AFF[Math.floor(Date.now()/864e5)%30]}
+function msg(){const d=days(),m=[...MS].reverse().find(x=>d>=x);return m?`🎉 ${m} days clean! Brother, that is not small. ${m>=30?'A month or more — you proved you can.':'Every day you are proving yourself.'}`+(MS.find(x=>x>d)?` Next milestone: ${MS.find(x=>x>d)} days.`:''):'The first day is the hardest. You started, and that is the win.'}
+function reasonsBox(){return `<div class="card"><h2>❤️ Why I'm quitting</h2>${S.reasons?`<p style="white-space:pre-wrap">${S.reasons.replace(/</g,'&lt;')}</p>`:'<p class="muted">Write your own reasons — family, work, health, yourself.</p>'}<textarea id="rs" placeholder="I'm quitting because...">${S.reasons}</textarea><button onclick="S.reasons=rs.value;sv();R[cur]()">Save</button></div>`}
+const oldHome=R.home;R.home=()=>{oldHome();$('main').insertAdjacentHTML('afterbegin',`<div class="card"><h2>✨ Today's line</h2><p style="font-size:20px">${aff()}</p></div>`);$('main').querySelectorAll('.card')[2].insertAdjacentHTML('beforeend',`<p>${msg()}</p>${S.spend?`<p class="muted">Money saved: ৳${days()*S.spend}</p>`:''}`);$('main').insertAdjacentHTML('beforeend',reasonsBox())};
+const oldClean=R.clean;R.clean=()=>{oldClean();$('main').querySelector('.card').insertAdjacentHTML('beforeend',`<p>${msg()}</p><div class="row">${MS.map(x=>`<span class="step ${days()>=x?'on':''}">${x}${days()>=x?' ✅':''}</span>`).join('')}</div><label>How much did you spend per day (৳)</label><input type="number" value="${S.spend||''}" onchange="S.spend=+this.value;sv();R.clean()"><div class="big" style="font-size:34px">৳${days()*(S.spend||0)}</div><p class="muted" style="text-align:center">saved so far</p>`)};
+let sosT,sosLeft;const SOS=['1 min breathing — follow the circle','Drink a glass of water, slowly','Walk — 5 minutes, inside or outside','Message Ratul or family: "Bro, craving is hitting, talk to me"'];
+R.sos=()=>{$('main').innerHTML=`<div class="card"><h2>🔥 Craving SOS</h2><p>Pause, brother. Cravings fade in 10-15 minutes — this wave will pass. Just follow this plan.</p><div class="big" id="st">15:00</div>
+<div id="circle" style="width:120px;height:120px">Ready</div>${SOS.map((t,i)=>`<div class="step" id="ss${i}">${i+1}. ${t}</div>`).join('')}
+<div class="row"><button class="p" onclick="sosGo()">Start 15 min plan</button><button onclick="sosStop()">Stop</button></div>
+<div class="row" style="margin-top:8px"><a href="${S.fam?'tel:'+S.fam:'#'}"><button>📞 Family</button></a><a href="sms:${S.fam||''}?body=Bro%2C%20craving%20is%20hitting%2C%20talk%20to%20me"><button>💬 Message</button></a></div></div>
+<div class="card"><h2>How did it go?</h2><label>Intensity (1-5)</label><select id="si">${[1,2,3,4,5].map(n=>`<option>${n}</option>`)}</select><select id="so"><option>Got through it 💪</option><option>It was hard, but I held on</option><option>I slipped (no shame, starting again)</option></select><button class="p" onclick="S.cr.unshift({t:new Date().toLocaleString(),i:+si.value,tr:'SOS',d:so.value});sv();alert('Logged. You can do this, brother.');go('clean')">Log it</button></div>${reasonsBox()}`};
+function sosGo(){clearInterval(sosT);sosLeft=900;breathe([['Breathe in',4],['Hold',4],['Breathe out',6]],4);sosT=setInterval(()=>{sosLeft--;const e=900-sosLeft,k=e<60?0:e<150?1:e<450?2:3;SOS.forEach((_,i)=>{const d=$('ss'+i);if(d)d.className='step'+(i==k?' on':i<k?' done':'')});if($('st'))$('st').textContent=String(sosLeft/60|0).padStart(2,'0')+':'+String(sosLeft%60).padStart(2,'0');if([60,150,450].includes(e))navigator.vibrate&&navigator.vibrate(150);if(sosLeft<=0){clearInterval(sosT);if($('st'))$('st').textContent='Well done! 💪'}},1000)}
+function sosStop(){clearInterval(sosT);clearTimeout(bt)}
+const WD=['Phone in another room / charging','Lights dimmed','Wrote tomorrow\'s top 3','Did 4-7-8 breathing'];
+R.sleep=()=>{const t=today(),w=(S.sleep['w'+t]||{});const ds=[...Array(7)].map((_,i)=>{const d=ld(new Date(Date.now()-(6-i)*864e5));return[d.slice(5),S.sleep[d]||0]});
+$('main').innerHTML=`<div class="card"><h2>🌙 Wind-down</h2>${WD.map((x,i)=>`<label class="ck"><input type="checkbox" ${w[i]?'checked':''} onchange="S.sleep['w${t}']=S.sleep['w${t}']||{};S.sleep['w${t}'][${i}]=this.checked;sv()">${x}</label>`).join('')}
+<div id="circle">Ready</div><button class="p" onclick="breathe([['Breathe in',4],['Hold',7],['Breathe out',8]],4)">4-7-8 breathing (4 round)</button></div>
+<div class="card"><h2>Sleep log</h2><label>Hours slept last night</label><input type="number" step="0.5" id="sh" value="${S.sleep[t]||''}"><button class="p" onclick="S.sleep[today()]=+sh.value;sv();R.sleep()">Save</button>
+<div class="bars" style="margin-top:12px">${ds.map(([d,v])=>`<div style="height:${Math.min(v/10,1)*100+8}%">${v||''}</div>`).join('')}</div><div class="row muted" style="justify-content:space-between">${ds.map(d=>`<span>${d[0]}</span>`).join('')}</div>
+<p class="muted">Target 7-8 hours. If it was less, no cursing yourself — just go to bed a bit earlier tonight.</p></div>`};
+setInterval(sched,30000);sched();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');go(location.hash.slice(1)||'home');
+</script></body></html>
